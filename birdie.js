@@ -20,9 +20,9 @@ const BIRDRSIDES =118;
 const BIRD_W=136, BIRD_H=92, BIRD_SPRITES=5;
 
 //image variables
-const cact = "cactus.png"
-const wolfie = "wolfie.png"
-const image_egg = "egg.png"
+const cact = "graphics/cactus.png"
+const wolfie = "graphics/wolfie.png"
+const image_egg = "graphics/egg.png"
 
 
 //classes
@@ -43,33 +43,33 @@ class Player {
 		let x = this.p1.x;
 		let y= this.p1.y;
 		var birdFront = new Image();
-		birdFront.src = "birdback.png"
+		birdFront.src = "graphics/birdback.png"
 		ctx.drawImage(birdFront, 0,0,BIRD_W,BIRD_H,x,y, BIRD_W,BIRD_H );
 	}
 
 	drawDown(){
 		var birdDown = new Image();
-		birdDown.src = "birdfront.png"
+		birdDown.src = "graphics/birdfront.png"
 		birdSprite = (birdSprite + 1) % BIRD_SPRITES;
 		ctx.drawImage(birdDown, birdSprite*BIRD_W,0,BIRD_W,BIRD_H, this.p1.x,this.p1.y,BIRD_W,BIRD_H );
 	}
 
 	drawUp() {
 		var birdUp = new Image();
-		birdUp.src = "birdback.png"
+		birdUp.src = "graphics/birdback.png"
 		birdSprite = (birdSprite + 1) % BIRD_SPRITES;
 		ctx.drawImage(birdUp, BIRD_W*birdSprite,0,BIRD_W,BIRD_H,this.p1.x,this.p1.y,BIRD_W,BIRD_H );
 	}
 
 	drawRight(){
 		var birdRight = new Image();
-		birdRight.src = "birdright.png"
+		birdRight.src = "graphics/birdright.png"
 		birdSprite = (birdSprite + 1) % BIRD_SPRITES;
 		ctx.drawImage(birdRight, BIRDRSIDES*birdSprite,0,BIRD_W,BIRD_H,this.p1.x,this.p1.y,BIRD_W,BIRD_H );
 	}
 	drawLeft(){
 		var birdLeft = new Image();
-		birdLeft.src = "birdleft.png"
+		birdLeft.src = "graphics/birdleft.png"
 		birdSprite = (birdSprite + 1) % BIRD_SPRITES;
 		ctx.drawImage(birdLeft, BIRDLSIDES*birdSprite,0,BIRD_W,BIRD_H,this.p1.x,this.p1.y,BIRD_W,BIRD_H );
 	}
@@ -118,7 +118,7 @@ class Player {
 	}
 	drawConfused(){
 		var confused = new Image();
-		confused.src = "birdstars.png"
+		confused.src = "graphics/birdstars.png"
 		birdSprite = (birdSprite + 1) % 5;
 		ctx.drawImage(confused ,BIRD_W*birdSprite,0,BIRD_W,BIRD_H,this.p1.x,this.p1.y,BIRD_W,BIRD_H );
 	}
@@ -331,10 +331,9 @@ function gameMenu()
 }
 ctx.fillStyle= "black";
 ctx.font = "italic bold 35pt Tahoma";
-//syntax : .fillText("text", x, y)
-ctx.fillText("Click to start game!",300,300);
+ctx.fillText("Click to start game!",200,300);
 ctx.font = "italic bold 15pt Tahoma"
-ctx.fillText("Get all eggs and don't get eaten!",350,340);
+ctx.fillText("Get all eggs and don't get eaten!",250,340);
 
 canvas.addEventListener("click", startAll)
 gameMenu();

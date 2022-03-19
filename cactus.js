@@ -1,4 +1,4 @@
-const cact = "cactus.png"
+const cact = "graphics/cactus.png"
 //	<script src="cactus.js"></script
 
 

@@ -4,7 +4,7 @@ canvas {
 }
 
 body {
-    background-image: url("birbbg.jpg");
+    background-image: url("graphics/birbbg.jpg");
 		height: 100%;
 		background-position: center;
     background-repeat:repeat;
