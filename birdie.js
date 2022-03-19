@@ -49,7 +49,7 @@ class Player {
 
 	drawDown(){
 		var birdDown = new Image();
-		birdDown.src = "birbfront.png"
+		birdDown.src = "birdfront.png"
 		birdSprite = (birdSprite + 1) % BIRD_SPRITES;
 		ctx.drawImage(birdDown, birdSprite*BIRD_W,0,BIRD_W,BIRD_H, this.p1.x,this.p1.y,BIRD_W,BIRD_H );
 	}
@@ -335,7 +335,7 @@ canvas.addEventListener("click", startAll)
 gameMenu();
 
 function startAll(){
-	erase();
+	//erase();
 	erase = setInterval(erase, 1000/15);
 	setInterval(shootingNeedle, 2500);
 	start = setInterval(startGame, 1000/15);
