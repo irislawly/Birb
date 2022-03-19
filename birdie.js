@@ -329,13 +329,18 @@ function gameMenu()
 		ctx.drawImage(menu, 0, 0);
 	}
 }
-
+ctx.fillStyle= "black";
+ctx.font = "italic bold 35pt Tahoma";
+//syntax : .fillText("text", x, y)
+ctx.fillText("Click to start game!",300,300);
+ctx.font = "italic bold 15pt Tahoma"
+ctx.fillText("Get all eggs and don't get eaten!",350,340);
 
 canvas.addEventListener("click", startAll)
 gameMenu();
 
 function startAll(){
-	//erase();
+	erase();
 	erase = setInterval(erase, 1000/15);
 	setInterval(shootingNeedle, 2500);
 	start = setInterval(startGame, 1000/15);
