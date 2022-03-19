@@ -1,0 +1,12 @@
+canvas {
+	background-color: 		#8FBC8F ;
+	border: 4px solid 	#006400
+}
+
+body {
+    background-image: url("birbbg.jpg");
+		height: 100%;
+		background-position: center;
+    background-repeat:repeat;
+    background-size: cover;
+}

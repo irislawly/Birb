@@ -1,0 +1,491 @@
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext('2d');
+const FPS = 60;
+
+let score = 0;
+
+const leftBoundary = 0;
+const topBoundary = 0;
+const rightBoundary = canvas.width-100;
+const bottomBoundary = canvas.height-100;
+
+
+
+//player const
+let down = false;
+let up = false;
+let right = false;
+let left = false;
+let birdSprite = 1;
+const BIRDLSIDES =115;
+const BIRDRSIDES =118;
+const BIRD_W=136, BIRD_H=92, BIRD_SPRITES=15; //down and up animation
+
+
+
+//object
+var player = {
+	x:canvas.width/2,
+	y:canvas.height-120,
+	speed: 2.5,
+	radius:50
+}
+var wolf = {
+	wx:300,
+	wy:300,
+	wrad: 30,
+	wdx: 2,
+	wdy: -1
+}
+var egg = {
+	eggx:50,
+	eggy:50,
+	erad: 25
+}
+
+function Cactus(x,y,r){
+	this.cx = x;
+	this.cy = y;
+	this.crad = r;
+}
+var cacti = [];
+let a = 3;
+let b = 120;
+let c = 20;
+let d = 370;
+let cactus1 = new Cactus(a, b, c,);
+let cactus2 = new Cactus(a, d, c,);
+cacti.push(cactus1);
+cacti.push(cactus2);
+let needles = [];
+
+//needle class and methods//
+class Point {
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+class Needle {
+	constructor(x1, y1, x2, y2, dx) {
+		this.p1 = new Point(x1, y1);
+		this.p2 = new Point(x2, y2);
+		this.dx = dx;
+
+	}
+	update() {
+		this.p1.x += this.dx;
+		this.p2.x += this.dx;
+	}
+	isVisible(maxX) {
+		return this.p1.x < maxX || this.p2.x > maxX;
+		}
+	draw(ctx){
+		ctx.beginPath();
+		ctx.lineTo(this.p1.x, this.p1.y);
+		ctx.lineTo(this.p2.x, this.p2.y);
+		ctx.stroke();
+	}
+}
+
+setInterval(shootingNeedle, 3000);
+////needle methods
+function shootingNeedle(){
+	let ny1 = cacti[0].cy + cacti[0].crad;
+	let ny2 = cacti[1].cy + cacti[0].crad;
+	let nx1 = 50;
+	let len = 7;
+	let ndx = 2;
+
+	let needle1 = new Needle(nx1, ny1, nx1 - len, ny1, 2);
+	let needle2 = new Needle(nx1, ny2, nx1 - len, ny2, 1);
+	needles.push(needle1);
+	needles.push(needle2);
+	}
+
+function updateNeedles() {
+	for(let needle of needles){
+		needle.update();
+	}
+	needles = needles.filter((needle) => needle.isVisible(canvas.width));
+}
+
+function drawNeedle() {
+	ctx.strokeStyle = "556B2F";
+	for(let needle of needles){
+		needle.draw(ctx);
+	}
+}
+
+
+
+
+
+// cactus FUNCTIONS
+
+function drawCactus(x, y){
+		var CACTUS = new Image();
+		CACTUS.src = "cactus.png"
+		CACTUS.onload = function (){
+		ctx.drawImage(CACTUS, x, y);
+		}
+}
+function drawCacti() {
+	// draws EVERY CACTUS
+	for(cactus of cacti){
+		drawCactus(cactus.cx, cactus.cy);
+	}
+}
+
+////PLAYER FUNCTIONS////
+function movePlayer() {
+//http://bencentra.com/2017-07-11-basic-html5-canvas-games.html
+	if (down && player.y < bottomBoundary+40) {
+		player.y += player.speed;
+		drawDown();
+	}
+	else if (up && player.y  > topBoundary) {
+		player.y -= player.speed;
+		drawUp();
+	}
+	else if (right && player.x < rightBoundary + 50) {
+		player.x += player.speed;
+		drawRight();
+	}
+	else if (left && player.x > leftBoundary-30) {
+		player.x -= player.speed;
+		drawLeft();
+	}
+	else {
+		drawNormal();
+	}
+}
+
+function stop(){
+	player.speed = 0.5;
+}
+
+function drawNormal(){
+	var x = player.x;
+	var y = player.y;
+	var BIRB = new Image();
+	BIRB.src = "birbfront.png"
+	BIRB.onload = function (){
+	ctx.drawImage(BIRB, 0,0,BIRD_W,BIRD_H,x,y,BIRD_W,BIRD_H );
+	}
+}
+function drawDown(){
+	var x = player.x;
+	var y = player.y;
+
+
+	var BIRB = new Image();
+	BIRB.src = "birbfront.png"
+	BIRB.addEventListener("load", function() {
+	setInterval(function(){ birdSprite = (birdSprite + 1) % BIRD_SPRITES }, 1000/5);
+		});
+	ctx.drawImage(BIRB, birdSprite*BIRD_W,0,BIRD_W,BIRD_H,x,y,BIRD_W,BIRD_H );
+
+}
+
+function drawUp() {
+	var x = player.x;
+	var y = player.y;
+
+	birdSprite = (birdSprite + 1) % BIRD_SPRITES;
+	var BIRB = new Image();
+	BIRB.src = "backbirb.png"
+	BIRB.addEventListener("load", function() {
+	setInterval(function(){ birdSprite = (birdSprite + 1) % BIRD_SPRITES },1000/5);
+		});
+	ctx.drawImage(BIRB, BIRD_W*birdSprite,0,BIRD_W,BIRD_H,x,y,BIRD_W,BIRD_H );
+}
+
+
+function drawRight(){
+	var x = player.x;
+	var y = player.y;
+	birdSprite = (birdSprite + 1) % BIRD_SPRITES;
+	var BIRB = new Image();
+	BIRB.src = "right.png"
+	BIRB.addEventListener("load", function() {
+	setInterval(function(){ birdSprite = (birdSprite + 1) % BIRD_SPRITES },1000/5);
+		});
+	ctx.drawImage(BIRB, BIRDRSIDES*birdSprite,0,BIRD_W,BIRD_H,x,y,BIRD_W,BIRD_H );
+	}
+
+function drawLeft(){
+	var x = player.x;
+	var y = player.y;
+	birdSprite = (birdSprite + 1) % BIRD_SPRITES;
+	var BIRB = new Image();
+	BIRB.src = "left.png"
+	BIRB.addEventListener("load", function() {
+	setInterval(function(){ birdSprite = (birdSprite + 1) % BIRD_SPRITES },1000/5);
+		});
+	ctx.drawImage(BIRB, BIRDLSIDES*birdSprite,0,BIRD_W,BIRD_H,x,y,BIRD_W,BIRD_H );
+	}
+
+
+/////WOLF FUNCTIONS////
+function drawWolf() {
+	let wx = wolf.wx;
+	let wy = wolf.wy;;
+	let WOLFIE = new Image();
+	WOLFIE.src = "wolfie.png"
+	WOLFIE.onload = function (){
+	ctx.drawImage(WOLFIE,wx,wy);
+	}
+
+}
+function updateWolf(){
+	//moves the wolf to next position with the current velocity
+	wolf.wx += wolf.wdx;
+	wolf.wy += wolf.wdy;
+	//changes the direction (velocity) when wolf reached a boundary
+	if (wolf.wx  > rightBoundary){
+		wolf.wx = rightBoundary;
+		wolf.wdx *= -1.0025;
+	}
+	if(wolf.wx < leftBoundary){
+		wolf.wx = leftBoundary;
+		wolf.wdx *= -1.0025;
+	}
+	if(wolf.wy > bottomBoundary ){
+		wolf.wy  = bottomBoundary;
+		wolf.wdy *= -1.0025;
+	}
+	if(wolf.wy  < topBoundary){
+		wolf.wy = topBoundary;
+		wolf.wdy *= -1.0025;
+	}
+}
+///egg FUNCTIONS
+function drawEgg(){
+	let x = egg.eggx;
+	let y = egg.eggy;
+	var EGG = new Image();
+	EGG.src = "egg.png"
+	EGG.onload = function (){
+	ctx.drawImage(EGG,x,y);
+	}
+}
+
+function moveEgg() {
+	egg.eggx = random(60,canvas.width-2*egg.erad);
+	egg.eggy = random(60,canvas.height-2*egg.erad);
+}
+//interval function:
+
+moveEgg();
+	let  start = setInterval(GameOne, 1000/60);
+
+function GameOne(){
+	movePlayer();
+	erase();
+	drawScoreBoard();
+	drawEgg();
+	movePlayer();
+	checkEggCollision();
+	drawNeedle();
+	updateNeedles();
+	wolftime()
+	checkNeedlesCollision();
+	drawCacti();
+	checkCactusCollision();
+	checkEggCollision();
+}
+
+function wolftime(){
+	updateWolf();
+	drawWolf();
+	checkWolfCollision();
+}
+
+
+
+// collision functions:
+
+function checkNeedlesCollision(){
+	for(let i = 0; i < needles.length; i++){
+		let need = needles[i];
+		let vx = (player.x + player.radius) - (0.75*need.p1.x); // 7 + 3.5
+		let vy = (player.y + player.radius) -  need.p1.y;
+		let distance = Math.sqrt(vx * vx + vy * vy) //the distance between the 2 objects/circles
+		let sumOfRadius =  0.5*(need.p1.x - need.p2.x) + player.radius; //the maximum distance with no collision
+			if(distance < sumOfRadius){
+				needles.splice(i,1);
+				i--;
+				score--
+				if(score < 0){
+					endGameLose()
+				}
+			}
+	}
+}
+function checkCactusCollision(){
+	for(let i = 0; i < cacti.length; i++){
+		let cat = cacti[i];
+		let vx = (player.x + player.radius) - (cat.cx + cat.crad);
+		let vy = (player.y + player.radius) - (cat.cy + cat.crad);
+		let distance = Math.sqrt(vx * vx + vy * vy); //the distance between the 2 objects/circles
+		let sumOfRadius =  cat.crad + player.radius; //the maximum distance with no collision
+			if(distance < sumOfRadius){
+					slow = setTimeout(stop,50);
+		}
+	}
+}
+
+
+function checkWolfCollision(){
+	let vx = (player.x + player.radius) - (wolf.wx + wolf.wrad);
+	let vy = (player.y + player.radius) - (wolf.wy + wolf.wrad);
+	let distance = Math.sqrt(vx * vx + vy * vy); //the distance between the 2 objects
+  let sumOfRadius = wolf.wrad + player.radius; //the maximum distance with no collision
+		if(distance < sumOfRadius){
+		endGameLose();
+	}
+}
+
+function checkEggCollision(){
+	let ex = (player.x + player.radius) - (egg.eggx + egg.erad);
+	let ey = (player.y + player.radius) - (egg.eggy + egg.erad);
+	let distance2 = Math.sqrt(ex * ex + ey * ey); //the distance between the 2 objects/circles
+	let sumOfRadius = egg.erad + player.radius; //the maximum distance with no collision
+		if(distance2 < sumOfRadius){
+			score++
+			if(score <= 5){
+				moveEgg();
+			if (score == 20){
+				endGameWin();
+			}
+		}
+	}
+}
+
+
+
+
+
+
+//ending conditions
+function endGameWin(){
+	ctx.fillstyle = "blue";
+	ctx.font = '24px Arial';
+	ctx.textAlign = 'center';
+	ctx.fillText('You Win! All the eggs are safe! Your score is ' + score , canvas.width / 2, canvas.height / 2);
+}
+
+function endGameLose(){
+	clearInterval(start)
+	erase();
+	ctx.fillstyle = "blue";
+	ctx.font = '24px Arial';
+	ctx.textAlign = 'center';
+	ctx.fillText('You lose! Your score is ' + score , canvas.width / 2, canvas.height / 2);
+}
+//extra functions
+canvas.addEventListener('keydown', function(event) {
+  event.preventDefault();
+
+  console.log(event.key, event.keyCode);
+  if (event.keyCode === 40) { // DOWN
+    down = true;
+  }
+  if (event.keyCode === 38) { // UP
+    up = true;
+  }
+  if (event.keyCode === 37) { // LEFT
+    left = true;
+  }
+  if (event.keyCode === 39) { // RIGHT
+    right = true;
+  }
+
+});
+
+canvas.addEventListener('keyup', function(event) {
+  event.preventDefault();
+  if (event.keyCode === 40) { // DOWN
+    down = false;
+  }
+  if (event.keyCode === 38) { // UP
+    up = false;
+  }
+  if (event.keyCode === 37) { // LEFT
+    left = false;
+  }
+  if (event.keyCode === 39) { // RIGHT
+    right = false;
+  }
+});
+function random(min, max) {
+  var num = Math.floor(Math.random() * (max - min + 1)) + min;
+  return num;
+}
+function erase() {
+	ctx.clearRect(0,0,canvas.height, canvas.width);
+}
+
+
+//cactus
+class Cactus {
+	constructor(file, x1, y1, rad, x2, y2, x3, y3, dx){
+		this.img = new Image();
+		this.img.src = file;
+		this.p1 = new Point(x1, y1);
+		this.rad = rad;
+		this.p2 = new Point(x2, y2);
+		this.p3 = new Point(x3, y3);
+		this.dx = dx;
+
+	}
+
+	draw(){
+				ctx.drawImage(this.img, this.p1.x, this.p1.y);
+	}
+	updateNeedle() {
+		this.p2.x += this.dx;
+		this.p3.x += this.dx;
+	}
+	isVisible(maxX) {
+		return this.p2.x < maxX || this.p3.x > maxX;
+		}
+	drawNeedle(ctx){
+		ctx.beginPath();
+		ctx.lineTo(this.p2.x, this.p2.y);
+		ctx.lineTo(this.p3.x, this.p3.y);
+		ctx.stroke();
+		ctx.strokeStyle = "556B2F";
+	}
+
+}
+function updateNeedles() {
+	for(let cactus of cacti){
+		cactus.updateNeedle();
+		console.log(cacti);
+	}
+	//cacti = cacti.filter((cactus) => cactus.isVisible(canvas.width));
+}
+//good
+let nx1 = 50;
+var cacti = [];
+let len = 7;
+let cactus1 = new Cactus(cact, 3, 100, 20, nx1, 120, nx1-len, 120, 2 );
+let cactus2 = new Cactus(cact, 3, 350, 20, nx1, 370,  nx1-len, 370, 1 );
+
+cacti.push(cactus1);
+cacti.push(cactus2);
+
+
+function drawCacti() {
+	erase()
+	for(let cactus of cacti){
+		cactus.drawNeedle(ctx);
+
+	for(cactus of cacti){
+		ctx.save();
+		cactus.draw();
+		ctx.restore()
+	}
+}
